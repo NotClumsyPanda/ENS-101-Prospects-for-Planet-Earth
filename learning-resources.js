@@ -1,0 +1,1 @@
+const PP_RESOURCES=[["NASA climate causes","https://science.nasa.gov/climate-change/causes/"],["NASA climate evidence","https://science.nasa.gov/climate-change/evidence/"],["NOAA climate impacts","https://www.noaa.gov/education/resource-collections/climate/climate-change-impacts"]];
