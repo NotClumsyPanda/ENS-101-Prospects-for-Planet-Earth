@@ -2,7 +2,7 @@
 'use strict';
 const priorStart=start,priorRender=render,priorPick=pick,priorNext=next,priorPrev=previousQuestion,priorSetMode=setMode,priorSubmitQuiz=submitQuiz;
 let checked=new Set();
-const btn=document.getElementById('submitQuestion');
+const btn=document.createElement('button');btn.type='button';btn.id='submitQuestion';btn.className='primary';btn.textContent='Submit Question';$('next').parentElement.insertBefore(btn,$('next'));
 const optionsFor=(q)=>q.options;
 const correctConcepts=new Map();
 BANK.forEach(q=>{const key=q.options[q.answer].trim().toLowerCase();if(!correctConcepts.has(key))correctConcepts.set(key,[]);correctConcepts.get(key).push(q)});
@@ -47,11 +47,11 @@ function updateControls(){
   [...$('options').children].forEach((b,i)=>{b.disabled=true;b.style.background=i===q.answer?'#e5f6ed':i===answers[q.id]?'#ffede9':'white';b.style.borderColor=i===q.answer?'#55aa7c':i===answers[q.id]?'#d67b6f':'#dfe5e3'});
  }else{$('explain').replaceChildren();$('explain').classList.add('hide')}
 }
-btn.onclick=()=>{if(mode!=='practice'||chosen===null||checked.has(session[index].id))return;checked.add(session[index].id);updateControls()};
+btn.onclick=()=>{if(mode!=='practice'||chosen===null||checked.has(session[index].id))return;checked.add(session[index].id);updateControls();$('explain').scrollIntoView({behavior:'smooth',block:'nearest'});};
 pick=function(i){if(mode==='practice'&&checked.has(session[index].id))return;priorPick(i);updateControls()};
 render=function(){priorRender();updateControls()};
 next=function(){if(mode==='practice'&&!checked.has(session[index].id)){ $('hint').textContent='Click Submit question before continuing.';return}priorNext()};
-previousQuestion=function(){priorPrev();updateControls()};
+previousQuestion=function(){if(index>0){priorPrev();updateControls()}};
 start=function(missed){checked=new Set();priorStart(missed);updateControls()};
 setMode=function(m){priorSetMode(m);if(m==='practice')checked=new Set();$('modeHelp').textContent=m==='practice'?'Select an answer, click Submit question, review correct and incorrect reasoning, then click Next.':'No answers are revealed during the exam. Submit Quiz to see your score and every question reviewed.';updateControls()};
 submitQuiz=function(){
