@@ -36,6 +36,9 @@ function reviewCard(q,selected,number){
  if(q.sourceUrl){const a=el('a','Further reading: '+(q.sourceTitle||'Science reference'));a.href=q.sourceUrl;a.target='_blank';a.rel='noopener noreferrer';card.append(a)}
  return card;
 }
+function neutralizeUnsubmitted(){
+ [...$('options').children].forEach((b,i)=>{b.classList.remove('correct','wrong');b.style.setProperty('background',i===chosen?'#edf0f3':'#fff','important');b.style.setProperty('border-color',i===chosen?'#697586':'#dfe5e3','important');b.style.setProperty('color','#263238','important')});
+}
 function updateControls(){
  const q=session[index],done=q&&checked.has(q.id);
  btn.classList.toggle('hide',mode!=='practice'||done);
@@ -45,7 +48,7 @@ function updateControls(){
  if(mode==='practice'&&done){
   const area=$('explain');area.replaceChildren(reviewCard(q,answers[q.id]));area.classList.remove('hide');
   [...$('options').children].forEach((b,i)=>{b.disabled=true;b.style.background=i===q.answer?'#e5f6ed':i===answers[q.id]?'#ffede9':'white';b.style.borderColor=i===q.answer?'#55aa7c':i===answers[q.id]?'#d67b6f':'#dfe5e3'});
- }else{$('explain').replaceChildren();$('explain').classList.add('hide')}
+ }else{$('explain').replaceChildren();$('explain').classList.add('hide');neutralizeUnsubmitted()}
 }
 btn.onclick=()=>{if(mode!=='practice'||chosen===null||checked.has(session[index].id))return;checked.add(session[index].id);updateControls();$('explain').scrollIntoView({behavior:'smooth',block:'nearest'});};
 pick=function(i){if(mode==='practice'&&checked.has(session[index].id))return;priorPick(i);updateControls()};
