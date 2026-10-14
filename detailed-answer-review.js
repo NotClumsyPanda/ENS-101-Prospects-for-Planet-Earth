@@ -8,13 +8,15 @@ const correctConcepts=new Map();
 BANK.forEach(q=>{const key=q.options[q.answer].trim().toLowerCase();if(!correctConcepts.has(key))correctConcepts.set(key,[]);correctConcepts.get(key).push(q)});
 function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n}
 function explanationFor(q,i){
+ if(q.optionExplanations&&q.optionExplanations[i])return q.optionExplanations[i];
  if(i===q.answer)return q.explanation;
  const label=q.options[i],other=correctConcepts.get(label.trim().toLowerCase());
  const relevant=other&&other.find(x=>x.id!==q.id&&x.lecture===q.lecture);
- if(relevant){
-   return 'This choice describes a different concept: '+relevant.explanation+' For this question, '+q.explanation;
- }
- return 'This choice does not correctly answer the question. '+q.explanation+' The key distinction is that the correct choice, “'+q.options[q.answer]+'”, fits the process or outcome described in the question, while “'+label+'” does not.';
+ if(relevant)return 'This option concerns a different process: '+relevant.explanation+' In the current question, '+q.explanation;
+ const sameLecture=MECHANISM_BANK.filter(x=>x.lecture===q.lecture);
+ const match=sameLecture.find(x=>x.options[0].toLowerCase()===label.toLowerCase());
+ if(match)return 'This answer describes '+match.topic+': '+match.explanation+' However, the current question asks about a different mechanism. '+q.explanation;
+ return 'This choice does not satisfy the question. The supported explanation is: '+q.explanation+' Compare the wording of this choice with the specific mechanism or consequence asked about.';
 }
 function reviewCard(q,selected,number){
  const card=el('section',undefined,'pp-card pp-deep-review');
